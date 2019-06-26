@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+#vagrant rsync-auto
+
 VAGRANTFILE_API_VERSION = "2"
 HOSTNAME = "CENTOS-Docker"
 
@@ -21,6 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
   config.vm.provision "shell", inline: <<-SHELL
+    yum install -y epel-release 
     yum install -y yum-utils jq net-tools
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     yum-config-manager --enable docker-ce-edge

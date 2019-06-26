@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# vagrant rsync-auto
+
+VAGRANTFILE_API_VERSION = "2"
+HOSTNAME = "CENTOS-Docker"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "centos/7"
+  #config.vm.box = "alpine/alpine64"
+  config.vm.hostname = "CENTOS-Docker"
+
+  config.vm.provider :virtualbox do |vb|
+    #vb.gui = true
+    #vb.name = HOSTNAME
+    vb.memory = 1024
+    vb.cpus = 2
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+  end
+
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    yum install -y epel-release 
+    yum install -y yum-utils jq net-tools
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum-config-manager --enable docker-ce-edge
+    yum install -y docker-ce
+    systemctl enable docker
+    systemctl start docker
+    usermod -aG docker vagrant
+  SHELL
+
+#  config.vm.provision "ansible" do |ansible|
+#    ansible.compatibility_mode = "2.0"
+#    ansible.playbook = "provisioning/main.yml"
+#  end
+
+end
+

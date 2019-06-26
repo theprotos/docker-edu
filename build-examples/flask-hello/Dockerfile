@@ -1,4 +1,5 @@
 #
+# docker build -t myimage:0.0.3 .
 # docker run -d -p 5000:5000 image
 # docker run -d -P image
 # curl localhost:5000
